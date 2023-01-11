@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        function displayQty(listData, checkId, qtyId) {
+            var checkBox = document.getElementById(checkId);
+            var qty = document.getElementById(qtyId);
+            if (checkBox.checked == true) {
+                qty.style.display = "block";
+                checkBox.value = listData + "," + qty.value
+            } else {
+                qty.style.display = "none";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="p-5 h-auto">
+        <header class=" bg-blue-300 p-4 h-16 rounded-t-md">
+            <h1 class="text-2xl text-slate-800 font-bold float-left">Dashboard Page Cashier App</h1>
+            <form method="get" action="/user/logout">
+                <button type="submit" class="float-right w-20 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/5 font-medium rounded-lg text-sm  py-1 text-center mr-2 mb-2">Logout</button>
+            </form>
+           
+            
+        </header>
+        <article class="bg-slate-200  grid grid-cols-3">
+            <section class="border-solid border-l-8 border-blue-300">
+                <h2 class="text-center text-xl font-semibold p-3">Profile</h2>
+                <form method="post" action="/user/img/update-profile" enctype="multipart/form-data">
+                    <div class="flex items-center justify-center">
+                        <img src="/user/img/profile" alt="Avatar" class="w-40 h-40 rounded-full">
+                    </div>
+                    <div class="flex items-center justify-center p-2">
+                        <label class="text-base">Hello {{.Cart.Name}}</label>
+                    </div>
+                    <div class="flex items-center justify-center p-1 text-sm">
+                        <label >Update Profile : &nbsp;</label>
+                        <input class="text-sm text-slate-500
+                        file:mr-1 file:py-0.5 file:px-1
+                        file:rounded-sm file:border-0
+                        file:text-sm
+                        file:text-violet-700" type="file" name="file-avatar" required />
+                    </div>
+                    <div class="flex items-center justify-center p-1 text-sm">
+                        <input type="submit" value="save" class="float-right w-14 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/5 font-medium rounded-lg text-sm  py-0.5 text-center mr-2 mb-2">
+                    </div>
+                </form>
+            </section>
+            <section class="border-solid border-l-8 border-blue-300">
+                <h2 class="text-center text-xl font-semibold p-3">List Product</h2>
+                <form method="post" action="/cart/add">
+                    <div class="px-16">
+                        {{range $val := .Product}}
+                        <input type="checkbox" id="check-{{ .Id }}" name="product" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                            onclick="displayQty('{{ .Id }},{{ .Name }},{{ .Price }}', 'check-{{ .Id }}', 'qty-{{ .Id }}')">
+                        <label>{{ .Id }}. {{ .Name }}: Rp. {{ .Price }},-</label>
+                        <input type="number" id="qty-{{ .Id }}" value="1" min="1" max="100" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                            onchange="displayQty('{{ .Id }},{{ .Name }},{{ .Price }}', 'check-{{ .Id }}', 'qty-{{ .Id }}')">
+                        <br>
+                        {{else}}
+                        Empty Product
+                        {{end}}
+                    </div>
+                    <div class="flex items-center justify-center p-1 text-sm">
+                        <button type="submit" class=" w-20 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-green-300 dark:focus:ring-red-800 shadow-lg shadow-green-500/5 font-medium rounded-lg text-sm  py-1 text-center mr-2 mb-2">ADD</button>
+                    </div>
+                    
+                    
+                </form>
+            </section>
+        
+            <section class="border-solid border-l-8 border-blue-300">
+                <h2 class="text-center text-xl font-semibold p-3">My Cart</h2>
+                <div class="px-8">
+                    <ul>
+                        {{range $val := .Cart.Cart}}
+                        <li>{{ .Name }}
+                            <ul>
+                                <li>Price: Rp. {{ .Price }},-</li>
+                                <li>Quantity: {{ .Quantity }}</li>
+                                <li>Total: {{ .Total }}</li>
+                                <li>.................................</li>
+                            </ul>
+                        </li>
+                        {{else}}
+                        Empty Cart
+                        {{end}}
+                    </ul>
+                    <p class="font-semibold">Total Price Rp. {{.Cart.TotalPrice}},-</p>
+                </div>
+                
+            </section>
+        </article>
+        <footer class="text-center bg-blue-300 p-2 rounded-b-md">
+            <p>&copy; 2020 - Yusseno</p>
+        </footer>
+    </div>
+    
+
+</body>
+
+</html>
